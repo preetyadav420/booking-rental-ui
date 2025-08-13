@@ -1,24 +1,32 @@
 import Login from "./Components/Login";
-import axios from "axios";
-
-const submit = (data) => {
-  console.log("Form submitted with data:", data);
-
-  axios
-    .post("http://localhost:8080/auth/login", data)
-    .then((response) => {
-      console.log("Login successful:", response.data);
-    })
-    .catch((error) => {
-      console.error("There was an error logging in:", error);
-    });
-};
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Listings from "./Components/Listings";
+import { useEffect, useState } from "react";
 
 const App = () => {
+  const [jwtToken, setJwtToken] = useState(sessionStorage.getItem("jwt"));
+
   return (
-    <div>
-      <Login onSubmit={submit} />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            jwtToken ? (
+              <Navigate to="/welcome" replace />
+            ) : (
+              <Login
+                handleLogin={() => setJwtToken(sessionStorage.getItem("jwt"))}
+              />
+            )
+          }
+        ></Route>
+        <Route
+          path="/welcome"
+          element={jwtToken ? <Listings /> : <Navigate to="/" replace />}
+        ></Route>
+      </Routes>
+    </BrowserRouter>
   );
 };
 

@@ -1,6 +1,7 @@
-import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "bootstrap/dist/css/bootstrap.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface IFormInput {
   username: string;
@@ -8,6 +9,7 @@ interface IFormInput {
 }
 
 const Login = (props: any) => {
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -16,8 +18,18 @@ const Login = (props: any) => {
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    props.onSubmit(data);
-    reset();
+    axios
+      .post("http://localhost:8080/auth/login", data, { withCredentials: true })
+      .then((response) => {
+        console.log("Login successful:", response.data);
+        sessionStorage.setItem("jwt", response.data.token);
+        reset();
+        props.handleLogin();
+        navigate("/welcome", { replace: true }); // Redirect to dashboard after successful login
+      })
+      .catch((error) => {
+        console.error("There was an error logging in:", error);
+      });
   };
 
   return (
@@ -32,7 +44,7 @@ const Login = (props: any) => {
       {errors.username && (
         <span className="text-danger">Username is required</span>
       )}
-
+      <label className="form-label">Password</label>
       <input
         className="form-control"
         type="text"
