@@ -1,6 +1,6 @@
 import Login from "./Components/Login";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Listings from "./Components/Listings";
+import ListingsPage from "./Components/ListingsPage";
 import { useEffect, useState } from "react";
 
 const App = () => {
@@ -23,7 +23,15 @@ const App = () => {
         ></Route>
         <Route
           path="/welcome"
-          element={jwtToken ? <Listings /> : <Navigate to="/" replace />}
+          element={
+            jwtToken ? (
+              <>
+                <ListingsPage />
+              </>
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
         ></Route>
       </Routes>
     </BrowserRouter>
