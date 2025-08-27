@@ -1,7 +1,7 @@
 import Login from "./Components/Login";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ListingsPage from "./Components/ListingsPage";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const App = () => {
   const [jwtToken, setJwtToken] = useState(sessionStorage.getItem("jwt"));
@@ -26,7 +26,11 @@ const App = () => {
           element={
             jwtToken ? (
               <>
-                <ListingsPage />
+                <ListingsPage
+                  handleLogout={() =>
+                    setJwtToken(sessionStorage.getItem("jwt"))
+                  }
+                />
               </>
             ) : (
               <Navigate to="/" replace />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import apiClient from "../Services/api-client";
-import { CanceledError } from "axios";
+import { AxiosError, CanceledError } from "axios";
 
 export interface Listing {
   title: string;
@@ -8,25 +8,29 @@ export interface Listing {
   description: string;
 }
 
-export interface ListingResponse {
-  results: Listing[];
+interface User {
+  username: string;
+}
+
+export interface ListingDto extends Listing {
+  vendor: User;
 }
 
 const useListings = () => {
-  const [listings, setListings] = useState<Listing[]>([]);
+  const [listings, setListings] = useState<ListingDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
     setIsLoading(true);
     apiClient
-      .get<ListingResponse>("/listings", {
+      .get<ListingDto[]>("/listings/mylistings", {
         signal: controller.signal,
       })
       .then((response) => {
-        console.log("Listings: ", response);
+        // console.log("Listings: ", response);
         setListings(response.data);
         setIsLoading(false);
       })
@@ -39,7 +43,7 @@ const useListings = () => {
     return () => controller.abort();
   }, [success]);
 
-  const submit = async (data: T) => {
+  const submit = async (data: Listing) => {
     setIsLoading(true);
     setError(null);
     setSuccess(false);

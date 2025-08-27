@@ -1,17 +1,12 @@
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
-import { useState, useEffect } from "react";
+import { ListingDto } from "../Hooks/useListings";
 
-const Listings = ({ listings }) => {
-  // const { listings } = useListings();
+interface ListingProps {
+  listings: ListingDto[];
+  isLoading: boolean;
+}
 
-  // const [abs, setAbs] = useState(listings);
-
-  // useEffect(() => {
-  //   console.log("chin tapak dam dam");
-  //   setAbs(listings);
-  // }, []);
-
+const Listings = ({ listings, isLoading }: ListingProps) => {
   return (
     <table className="table table-bordered">
       <thead>
@@ -24,6 +19,15 @@ const Listings = ({ listings }) => {
       </thead>
 
       <tbody>
+        {isLoading && (
+          <tr>
+            <td colSpan={4} className="text-center">
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </td>
+          </tr>
+        )}
         {listings.map((listing, index) => (
           <tr key={index}>
             <td>{listing.title}</td>

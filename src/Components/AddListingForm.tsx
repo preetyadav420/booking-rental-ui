@@ -1,7 +1,5 @@
-import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "bootstrap/dist/css/bootstrap.css";
-import useListings from "../Hooks/useListings";
 
 interface IFormInput {
   title: string;
@@ -9,19 +7,22 @@ interface IFormInput {
   description: string;
 }
 
-const AddListingForm = (props) => {
+interface AddListingFormProps {
+  submit: (data: IFormInput) => void;
+}
+
+const AddListingForm = (props: AddListingFormProps) => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => props.submit(data);
+  const onSubmit: SubmitHandler<IFormInput> = (data) => props.submit(data);
 
   return (
     <>
-      <label className="h1">Add New Listing</label>
+      <label className="h3">Add New Listing</label>
       <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
         <label className="form-label">Title</label>
         <input

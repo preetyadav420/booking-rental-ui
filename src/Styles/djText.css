@@ -1,0 +1,28 @@
+.dj-text {
+  font-weight: bold;
+  font-size: 3rem; /* adjust size */
+  background: linear-gradient(
+    270deg,
+    #ff0000,
+    #00ff00,
+    #0000ff,
+    #ffff00,
+    #ff00ff,
+    #00ffff,
+    #ff0000
+  );
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent; /* makes text show gradient */
+  animation: djMove 5s linear infinite;
+}
+
+@keyframes djMove {
+  0% {
+    background-position: 100% 0%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
