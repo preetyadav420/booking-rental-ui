@@ -4,9 +4,16 @@ import { ListingDto } from "../Hooks/useListings";
 interface ListingProps {
   listings: ListingDto[];
   isLoading: boolean;
+  showActions?: boolean;
+  remove: (data: ListingDto) => Promise<void>;
 }
 
-const Listings = ({ listings, isLoading }: ListingProps) => {
+const Listings = ({
+  listings,
+  isLoading,
+  showActions,
+  remove,
+}: ListingProps) => {
   return (
     <table className="table table-bordered">
       <thead>
@@ -15,6 +22,7 @@ const Listings = ({ listings, isLoading }: ListingProps) => {
           <th scope="col">Price Per Day</th>
           <th scope="col">Description</th>
           <th scope="col">Vendor</th>
+          {showActions && <th scope="col">Action</th>}
         </tr>
       </thead>
 
@@ -34,6 +42,16 @@ const Listings = ({ listings, isLoading }: ListingProps) => {
             <td>{listing.pricePerDay}</td>
             <td>{listing.description}</td>
             <td>{listing.vendor.username}</td>
+            {showActions && (
+              <td>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={() => remove(listing)}
+                />
+              </td>
+            )}
           </tr>
         ))}
       </tbody>

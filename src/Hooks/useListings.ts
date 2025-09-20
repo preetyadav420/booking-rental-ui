@@ -13,10 +13,15 @@ interface User {
 }
 
 export interface ListingDto extends Listing {
+  id: string;
   vendor: User;
 }
 
-const useListings = () => {
+interface UseListingsProp {
+  mylisting: boolean;
+}
+
+const useListings = ({ mylisting }: UseListingsProp) => {
   const [listings, setListings] = useState<ListingDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +31,7 @@ const useListings = () => {
     const controller = new AbortController();
     setIsLoading(true);
     apiClient
-      .get<ListingDto[]>("/listings/mylistings", {
+      .get<ListingDto[]>(`/listings${mylisting ? "/mylistings" : ""}`, {
         signal: controller.signal,
       })
       .then((response) => {
@@ -41,7 +46,7 @@ const useListings = () => {
       });
 
     return () => controller.abort();
-  }, [success]);
+  }, [mylisting, success]);
 
   const submit = async (data: Listing) => {
     setIsLoading(true);
@@ -61,7 +66,25 @@ const useListings = () => {
     }
   };
 
-  return { listings, isLoading, error, submit, success };
+  const remove = async (data: ListingDto) => {
+    setIsLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      const res = await apiClient.delete("/listings/" + data.id);
+      setSuccess(true);
+      return res.data;
+    } catch (err) {
+      const e = err as AxiosError;
+      setError(e.message || "Something went wrong");
+      throw e;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return { listings, isLoading, error, submit, success, remove };
 };
 
 export default useListings;

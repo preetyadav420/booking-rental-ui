@@ -2,19 +2,24 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import "bootstrap/dist/css/bootstrap.css";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface IFormInput {
   username: string;
   password: string;
 }
 
-interface LoginInput {
-  handleLogin: () => void;
+interface LoginProps {
+  setToken: (token: string) => void;
 }
 
-const Login = ({ handleLogin }: LoginInput) => {
+const Login = ({ setToken }: LoginProps) => {
   const navigate = useNavigate();
+  useEffect(() => {
+    const token = sessionStorage.getItem("jwt");
+    if (token) navigate("/listings", { replace: true });
+  }, [navigate]);
+
   const {
     register,
     handleSubmit,
@@ -29,11 +34,12 @@ const Login = ({ handleLogin }: LoginInput) => {
       .post("http://localhost:8080/auth/login", data, { withCredentials: true })
       .then((response) => {
         // console.log("Login successful:", response.data);
-        sessionStorage.setItem("jwt", response.data.token);
+        const token = response.data.token;
+        sessionStorage.setItem("jwt", token);
+        setToken(token);
         setLoginError(null);
         reset();
-        handleLogin();
-        navigate("/welcome", { replace: true }); // Redirect to dashboard after successful login
+        navigate("/listings", { replace: true }); // Redirect to dashboard after successful login
       })
       .catch((error) => {
         console.error("There was an error logging in:", error);

@@ -16,13 +16,16 @@ const AddListingForm = (props: AddListingFormProps) => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<IFormInput>();
 
-  const onSubmit: SubmitHandler<IFormInput> = (data) => props.submit(data);
+  const onSubmit: SubmitHandler<IFormInput> = (data) => {
+    props.submit(data);
+    reset();
+  };
 
   return (
     <>
-      <label className="h3">Add New Listing</label>
       <form className="mb-3" onSubmit={handleSubmit(onSubmit)}>
         <label className="form-label">Title</label>
         <input
