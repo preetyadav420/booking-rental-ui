@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import axios, { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import apiClient from "../Services/api-client";
 
 interface IFormInput {
   username: string;
@@ -30,8 +31,8 @@ const Login = ({ setToken }: LoginProps) => {
   const [loginError, setLoginError] = useState<AxiosError | null>(null);
 
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    axios
-      .post("http://localhost:8080/auth/login", data, { withCredentials: true })
+    apiClient
+      .post("/auth/login", data, { withCredentials: true })
       .then((response) => {
         // console.log("Login successful:", response.data);
         const token = response.data.token;
